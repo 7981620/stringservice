@@ -7,39 +7,9 @@ use Propaganistas\LaravelPhone\PhoneNumber;
 class StringService
 {
 
-    protected SmsService $sms;
-    protected TelegramService $telegram;
-
-    public function __construct()
-    {
-        $this->sms = new SmsService();
-        $this->telegram = new TelegramService();
-    }
-
-    /**
-     * Экземпляр класса отправки sms
-     *
-     * @return SmsService
-     */
-    public function smsService(): SmsService
-    {
-        return $this->sms;
-    }
-
-    /**
-     * Экземпляр класса отправки в Telegram
-     *
-     * @return TelegramService
-     */
-    public function telegramService(): TelegramService
-    {
-        return $this->telegram;
-    }
-
-
     /**
      * Отображает украинский номер мобильного
-     * в виде 38(000)00-00-00
+     * в виде 38(000)000-00-00
      *
      * @param  string  $phone
      * @return string
@@ -68,6 +38,11 @@ class StringService
     public function phoneUaTransform(string $phone): string
     {
 
+        if(str_starts_with($phone, '380')) {
+            return $phone;
+        }
+
+
         if (!str_starts_with($phone, '380')) {
             if (str_starts_with($phone, '80')) {
                 return '3'.$phone;
@@ -75,8 +50,8 @@ class StringService
             if (str_starts_with($phone, '0')) {
                 return '38'.$phone;
             }
-
         }
+
         return '380'.$phone;
     }
 
@@ -205,7 +180,7 @@ class StringService
     public function getMobilePhone(string $string)
     {
 
-        $string = str_replace(',', ';', $string);
+        $string = str_replace([',','|','/'], ';', $string);
         $array = explode(';', $string);
 
         foreach ($array as $phone) {
@@ -266,6 +241,9 @@ class StringService
      */
     public function randomStringFromBytes(int $length = 8): string
     {
+        if($length < 1) {
+            $length = 1;
+        }
         return (string) str_shuffle(substr(bin2hex(random_bytes($length)), 0, $length));
     }
 
@@ -287,7 +265,7 @@ class StringService
             $random_character = $input[random_int(0, $input_length - 1)];
             $random_string .= $random_character;
         }
-        return (string) str_shuffle($random_string);
+        return str_shuffle($random_string);
     }
 
 
