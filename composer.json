@@ -19,7 +19,7 @@
         "php": "^8.0",
         "ext-curl": "*",
         "ext-bcmath": "*",
-        "propaganistas/laravel-phone": "^4.2"
+        "propaganistas/laravel-phone": "^4.2 || ^4.3"
     },
     "require-dev": {
         "orchestra/testbench": "^6.0",
