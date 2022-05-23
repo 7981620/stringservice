@@ -7,6 +7,42 @@ use Propaganistas\LaravelPhone\PhoneNumber;
 class StringService
 {
 
+
+    /**
+     * Форматує номер банківської картки через дефіс,
+     * та маскує цифрі в середені '*' у разі потреби ($maskeng = true)
+     *
+     * @param string $cc
+     * @param bool $masking
+     * @return string
+     */
+    public function formatCreditCard(string $cc, bool $masking = false): string
+    {
+        $cc = str_replace(array('-', ' '), '', $cc);
+        $cc_length = strlen($cc);
+        $newCreditCard = substr($cc, -4);
+
+        for ($i = $cc_length - 5; $i >= 0; $i--) {
+            if ((($i + 1) - $cc_length) % 4 == 0) {
+                $newCreditCard = '-' . $newCreditCard;
+            }
+            $newCreditCard = $cc[$i] . $newCreditCard;
+        }
+
+        if($masking) {
+            for ($i = 4; $i < $cc_length - 4; $i++) {
+                if ($newCreditCard[$i] === '-') {
+                    continue;
+                }
+                $newCreditCard[$i] = '*';
+            }
+        }
+
+        return $newCreditCard;
+    }
+
+
+
     /**
      * Отображает украинский номер мобильного
      * в виде 38(000)000-00-00
